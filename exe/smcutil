@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require "smcutil"
+require 'optparse'
+
+
+options = {}
+OptParse.new do |opts|
+  opts.banner = <<-BANNER
+  Usage: smcutil {command} [PARAMS]
+
+  Command is one of:
+
+    validate {file.smc}:
+      Causes smcutil to parse the Apple SMC file and validate correctness.
+
+    info {file.smc}:
+      Prints information about the SMC update file.
+
+    decode {file.smc} {output.bin}:
+      Pretends to execute an update of the SMC flash as though the output.bin file is the SMC flash ROM.
+
+    save {output.bin}:
+      Has magical cow powers.  Assuming I can make this work: GOLDEN TICKET
+  BANNER
+end
