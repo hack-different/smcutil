@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 
-require "smcutil"
+$:.unshift File.expand_path('../lib', __dir__)
+require_relative '../lib/smcutil'
 require 'optparse'
 
-
-options = {}
-OptionParser.new do |opts|
-  opts.banner = <<-BANNER
+BANNER = <<-BANNER
   Usage: smcutil {command} [PARAMS]
 
   Command is one of:
@@ -22,5 +20,43 @@ OptionParser.new do |opts|
 
     save {output.bin}:
       Has magical cow powers.  Assuming I can make this work: GOLDEN TICKET
-  BANNER
-end.parse!
+BANNER
+
+def show_usage
+  puts BANNER
+  exit
+end
+
+command = (ARGV.shift || '').to_sym
+
+COMMANDS = [ :validate, :info, :decode, :save ]
+
+show_usage unless COMMANDS.include? command
+
+case command
+  when :validate
+    begin
+    file = ARGV.shift
+    show_usage unless file
+    reader = SmcUtil::FileReader.parse file
+      puts "The file '#{file}' is valid."
+    rescue => ex
+      puts ex
+    end
+  when :decode
+    begin
+      input = ARGV.shift
+      output = ARGV.shift
+
+      show_usage unless input && output
+      reader = SmcUtil::FileReader.parse input
+      extractor = SmcUtil::FileExtractor.new reader
+      extractor.extract_to output
+    rescue => ex
+      puts ex
+    end
+  when :info
+
+  else
+    show_usage
+end

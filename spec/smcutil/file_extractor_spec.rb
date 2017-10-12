@@ -6,17 +6,9 @@ RSpec.describe SmcUtil::FileExtractor do
 
     @extractor = SmcUtil::FileExtractor.new file
 
-    @output_dir = Dir.mktmpdir
+    @output_dir = File.join(Dir.mktmpdir, 'output.bin')
     puts "Output Directory: #{@output_dir}"
     @extractor.extract_to @output_dir
-  end
-
-  it 'should create a header output file' do
-    File.exists? File.join(@output_dir, 'header.bin')
-  end
-
-  it 'should create a signature output file' do
-    File.exists? File.join(@output_dir, 'signature.bin')
   end
 
   it 'should create a binary file' do
