@@ -17,7 +17,8 @@ class SmcUtil::FileExtractor
 
     File.open(File.join(path, 'binary.bin'), OUTPUT_FILE_FLAGS) do |file|
       @file_reader.regions.each do |offset, content|
-        file.seek offset
+        range_bytes = offset - file.pos
+        file.write "\0" * range_bytes if range_bytes > 0
         file.write content
       end
     end

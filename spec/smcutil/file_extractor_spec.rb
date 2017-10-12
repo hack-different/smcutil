@@ -22,4 +22,6 @@ RSpec.describe SmcUtil::FileExtractor do
   it 'should create a binary file' do
     File.exists? File.join(@output_dir, 'output.bin')
   end
+
+  it 'should output a file of the same length as the total data'
 end
