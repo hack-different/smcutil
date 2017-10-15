@@ -8,7 +8,7 @@ module SmcUtil
     end
 
     def to_s
-      "#{self.offset} (length #{data.length})"
+      "#{self.offset.to_s(16).upcase} (length #{data.length})"
     end
   end
 end

@@ -8,10 +8,11 @@ class SmcUtil::FileExtractor
 
   def extract_to(path)
     File.open(path, OUTPUT_FILE_FLAGS) do |file|
-      @file_reader.regions.each do |offset, content|
-        range_bytes = offset - file.pos
+      @file_reader.regions.each do |region|
+        range_bytes = region.offset - file.pos
         file.write "\0" * range_bytes if range_bytes > 0
-        file.write content
+        file.seek region.offset
+        file.write region.data
       end
     end
   end
