@@ -2,7 +2,7 @@ module SmcUtil
   LINE_COMMAND = /((?<type>[[:upper:]]):(?<offset>([[:xdigit:]]{2})+:)?|(?<continue>\+\s+:))(?<length>\d+):(?<data>([[:xdigit:]]{2})+):(?<check>[[:xdigit:]]{2})/
 
   class FileReader
-    attr_reader :header
+    attr_reader :headers
     attr_reader :signature
     attr_reader :regions
 
@@ -10,9 +10,9 @@ module SmcUtil
     def initialize(data)
 
       # Setup the collected data
-      @header = String.new
-      @signature = String.new
-      @regions = {}
+      @headers = []
+      @signature = ''
+      @regions = []
 
       current_region = nil
 
@@ -37,18 +37,23 @@ module SmcUtil
 
         case match[:type]
           when 'H'
-            @header += data
+            @headers << data
           when 'S'
             @signature += data
           when 'D'
-            current_region = match[:offset].to_i(16)
-            @regions[current_region] = String.new
-            @regions[current_region] += data
+            if match[:offset]
+              current_offset = match[:offset].scan(/../).map { |x| x.hex.chr }.join.bytes.inject {|a, b| (a << 8) + b }
+
+              current_region = SmcUtil::Region.new current_offset, ''
+              @regions << current_region
+            end
+
+            current_region.data += data
           else
             raise "LINE #{index}: Command #{match[:type]} not recognised" unless match[:continue]
             raise "LINE #{index}: Continuation row with no data region set" unless current_region
 
-            @regions[current_region] += data
+            current_region.data += data
         end
       end
     end

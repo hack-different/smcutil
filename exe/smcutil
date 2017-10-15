@@ -39,9 +39,19 @@ case command
     file = ARGV.shift
     show_usage unless file
     reader = SmcUtil::FileReader.parse file
+
+    validator = SmcUtil::FileValidator.new reader
+
+    if validator.valid?
       puts "The file '#{file}' is valid."
+    else
+      validator.errors.each do |error|
+        puts "ERROR: #{error}"
+      end
+    end
     rescue => ex
       puts ex
+      puts ex.backtrace
     end
   when :decode
     begin
@@ -54,6 +64,7 @@ case command
       extractor.extract_to output
     rescue => ex
       puts ex
+      puts ex.backtrace
     end
   when :info
 
