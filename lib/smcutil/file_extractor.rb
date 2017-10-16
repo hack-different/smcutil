@@ -16,4 +16,21 @@ class SmcUtil::FileExtractor
       end
     end
   end
+
+  def shred_to(path)
+    Dir.mkdir(path) unless Dir.exists? path
+
+    pass = position = 0
+
+    @file_reader.regions.each do |region|
+      pass += 1 if region.offset < position
+      position = region.offset
+
+      filename = File.join(path, "#{region.offset.to_s(16)}_pass#{pass}.bin")
+
+      File.open(filename, OUTPUT_FILE_FLAGS) do |file|
+        file.write region.data
+      end
+    end
+  end
 end

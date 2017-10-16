@@ -10,13 +10,19 @@ BANNER = <<-BANNER
   Command is one of:
 
     validate {file.smc}:
-      Causes smcutil to parse the Apple SMC file and validate correctness.
+      Causes smcutil to parse the Apple SMC file and validate correctness and signature.
 
     info {file.smc}:
       Prints information about the SMC update file.
 
     decode {file.smc} {output.bin}:
       Pretends to execute an update of the SMC flash as though the output.bin file is the SMC flash ROM.
+
+      The output can then be loaded with the ROMs to allow for emulation / analysis.
+
+    shred {file.smc} {output_directory}:
+      As smc files may re-flash the same region multiple times, this outputs each flash page to a folder without
+      overwriting and suffixing the region with the pass.
 
     save {output.bin}:
       Has magical cow powers.  Assuming I can make this work: GOLDEN TICKET
@@ -29,7 +35,7 @@ end
 
 command = (ARGV.shift || '').to_sym
 
-COMMANDS = [ :validate, :info, :decode, :save ]
+COMMANDS = [ :validate, :info, :decode, :save, :shred ]
 
 show_usage unless COMMANDS.include? command
 
@@ -53,7 +59,7 @@ case command
       puts ex
       puts ex.backtrace
     end
-  when :decode
+  when :decode, :shred
     begin
       input = ARGV.shift
       output = ARGV.shift
@@ -61,7 +67,12 @@ case command
       show_usage unless input && output
       reader = SmcUtil::FileReader.parse input
       extractor = SmcUtil::FileExtractor.new reader
-      extractor.extract_to output
+
+      if command == :decode
+        extractor.extract_to output
+      else
+        extractor.shred_to output
+      end
     rescue => ex
       puts ex
       puts ex.backtrace

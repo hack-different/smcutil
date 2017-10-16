@@ -22,7 +22,10 @@ module SmcUtil
 
         # Prepare to parse the line
         line ||= line.strip!
-        puts "INFO: #{line}" && next if line.nil? or line.start_with? '#'
+
+        puts "INFO: #{line}" if line.start_with?('#')
+
+        next if line.nil? || line.start_with?('#')
         match = LINE_COMMAND.match(line)
         raise "LINE #{index}: Does not match format" unless match
 
