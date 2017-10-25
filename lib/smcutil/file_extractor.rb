@@ -26,7 +26,7 @@ class SmcUtil::FileExtractor
       pass += 1 if region.offset < position
       position = region.offset
 
-      filename = File.join(path, "#{region.offset.to_s(16)}_pass#{pass}.bin")
+      filename = File.join(path, "pass#{pass}_#{region.offset.to_s(16)}.bin")
 
       File.open(filename, OUTPUT_FILE_FLAGS) do |file|
         file.write region.data
