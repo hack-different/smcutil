@@ -2,6 +2,11 @@
 
 `smcutil` is a command line tool for reading Apple's SMC payloads, validating them, fingerprinting them and extracting the contents for disassembly.
 
+## Progress
+
+Currently looking for a number of MacBooks with good SMCs that may be offered as tribute for `save`
+and waiting on Stellaris development hardware.  Anyone have a sub-micron wealder out there?
+
 ## Installation
 
 Install it yourself as:
@@ -22,11 +27,16 @@ Install it yourself as:
       info {file.smc}:
         Prints information about the SMC update file.
         
-      flashfile {file.smc} {output.bin}:
+      decode {file.smc} {output.bin}:
         Pretends to execute an update of the SMC flash as though the output.bin file is the SMC flash ROM.
         
+      shred {file.smc} {output_dir}:
+        Pulls apart each flash region, so that multiple passes can be examined
+        
       save {output.bin}:
-        Has magical cow powers.  Assuming I can make this work: GOLDEN TICKET
+        (IN PROGRESS)
+        Has magical bear powers.  Loads SMC update payload to capture the contents of the application partition.
+        No warrently, may bork hardware.
 
 ## Development
 
