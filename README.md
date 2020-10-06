@@ -1,6 +1,6 @@
 # `smcutil` for Appple SMC
 
-`smcutil` is a command line tool for reading Apple's SMC payloads, validating them, fingerprinting them and extracting the contents for disassembly.
+`smcutil` is a command line tool for reading Apple's SMC payloads on T1 and prior devices, validating them, fingerprinting them and extracting the contents for disassembly.
 
 ## Progress
 
